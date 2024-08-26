@@ -9,12 +9,20 @@ const initialState = {
     timeLeft: mockQuizData.totalTime,
     quizData: mockQuizData,
     isQuizEnded: false,
-    timerId: null,
-    userAnswers: [],
+    timerId: undefined as number | undefined,
+    userAnswers: [] as string[],
     score: 0
 }
 
-const reducer = (state, action) => {
+type State = typeof initialState
+
+type Action = { type: 'nextQuestion' }
+  | { type: 'startTimer'; payload: number }
+  | { type: 'decrementTimer' }
+  | { type: 'endQuiz' }
+  | { type: 'answerQuestion'; payload: string };
+
+const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case 'nextQuestion':
             return {
@@ -37,7 +45,7 @@ const reducer = (state, action) => {
                 return {
                     ...state,
                     isQuizEnded: true,
-                    timerId: null
+                    timerId: undefined
                 }
             }
         case 'endQuiz':
@@ -45,7 +53,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 isQuizEnded: true,
-                timerId: null
+                timerId: undefined
             }
         case 'answerQuestion':
             { const isCorrect = action.payload === state.quizData.questions[state.currentQuestion].correctAnswer;
@@ -79,12 +87,12 @@ export const QuizScreen = () => {
         }
     }
 
-    const answerQuestion = (answer) => {
+    const answerQuestion = (answer: string) => {
         dispatch({ type: 'answerQuestion', payload: answer });
         nextQuestion();
     }
 
-    const formatTime = (seconds) => {
+    const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
@@ -117,7 +125,7 @@ export const QuizScreen = () => {
                 <div>
                     <h3>{currentQuestion.text}</h3>
                     <div>
-                        {currentQuestion.options.map((option, index) => (
+                        {currentQuestion.options.map((option : string, index: number) => (
                             <button key={index} onClick={() => answerQuestion(option)}>
                                 {option}
                             </button>
