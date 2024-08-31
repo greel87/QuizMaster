@@ -1,4 +1,7 @@
-export const ResultScreen =() => {
+import { Link } from "react-router-dom"
+
+export const ResultScreen = () => {
+   return(
     <div>
         <h1>Thank you for completing this quiz. Here are your results</h1>
         <div>
@@ -15,8 +18,14 @@ export const ResultScreen =() => {
             <p>Total time: 2 minutes</p>
         </div>
         <div>
-            <button>Restart</button>
-            <button>Choose Another Quiz</button>
+            <Link to = '/quizscreen'>
+                <button>Restart</button>
+            </Link>
+            <Link to = '/'>
+                <button>Choose Another Quiz</button>
+            </Link>
         </div>
     </div>
+   )
 }
+export default ResultScreen

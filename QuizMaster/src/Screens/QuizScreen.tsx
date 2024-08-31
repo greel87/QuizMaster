@@ -1,28 +1,20 @@
-import { useReducer } from 'react';
+import { useReducer} from 'react';
 import '../App.css'
 import { mockQuizData } from './MockData';
-//What context cna i use here
-//can I move the states into a context
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const initialState = {
     currentQuestion: 0,
     timeLeft: mockQuizData.totalTime,
     quizData: mockQuizData,
     isQuizEnded: false,
-    timerId: undefined as number | undefined,
-    userAnswers: [] as string[],
+    timerId: null,
+    userAnswers: [],
     score: 0
 }
 
-type State = typeof initialState
-
-type Action = { type: 'nextQuestion' }
-  | { type: 'startTimer'; payload: number }
-  | { type: 'decrementTimer' }
-  | { type: 'endQuiz' }
-  | { type: 'answerQuestion'; payload: string };
-
-const reducer = (state: State, action: Action): State => {
+const reducer = (state, action) => {
     switch (action.type) {
         case 'nextQuestion':
             return {
@@ -45,7 +37,7 @@ const reducer = (state: State, action: Action): State => {
                 return {
                     ...state,
                     isQuizEnded: true,
-                    timerId: undefined
+                    timerId: null,
                 }
             }
         case 'endQuiz':
@@ -53,7 +45,7 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 isQuizEnded: true,
-                timerId: undefined
+                timerId: null,
             }
         case 'answerQuestion':
             { const isCorrect = action.payload === state.quizData.questions[state.currentQuestion].correctAnswer;
@@ -69,6 +61,7 @@ const reducer = (state: State, action: Action): State => {
 
 export const QuizScreen = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const navigate = useNavigate()
 
     const startTimer = () => {
         if (!state.timerId) {
@@ -92,11 +85,12 @@ export const QuizScreen = () => {
         nextQuestion();
     }
 
-    const formatTime = (seconds: number) => {
+    const formatTime = (seconds:number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     }
+
 
     if (!state.timerId && !state.isQuizEnded) {
         startTimer();
@@ -106,7 +100,7 @@ export const QuizScreen = () => {
     const progress = (state.currentQuestion / state.quizData.questions.length) * 100;
 
     return (
-        <div>
+        <div id='QuizScreen'>
             <h1>React Quiz</h1>
             <div>Time Left: {formatTime(state.timeLeft)}</div>
             <div>
@@ -116,23 +110,28 @@ export const QuizScreen = () => {
                 </div>
                 <div>Question {state.currentQuestion + 1} of {state.quizData.questions.length}</div>
             </div>
-            {state.isQuizEnded ? (
+            <div>
+                <h3>{currentQuestion.text}</h3>
                 <div>
-                    <h2>Quiz Ended!</h2>
-                    <p>Your score: {state.score} out of {state.quizData.questions.length}</p>
+                    {currentQuestion.options.map((option: string, index: number) => (
+                        <button key={index} onClick={() => answerQuestion(option)}>
+                            {option}
+                        </button>
+                    ))}
                 </div>
-            ) : (
-                <div>
-                    <h3>{currentQuestion.text}</h3>
-                    <div>
-                        {currentQuestion.options.map((option : string, index: number) => (
-                            <button key={index} onClick={() => answerQuestion(option)}>
-                                {option}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
+            </div>
+            <div>
+                <Link to='/resultscreen'>
+                <button onClick={(event) =>{
+                    if(!confirm("Are you sure you want to end this quiz?")){
+                        event.preventDefault()
+                    }
+                    else {
+                        navigate('/resultscreen')
+                    }
+                    }}>End Quiz</button>
+                </Link>
+            </div>
         </div>
     )
 }
