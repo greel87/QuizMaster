@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import '../App.css'
 
 
@@ -59,8 +60,12 @@ const FirstScreen = () =>{
             </div>
             <br />
             <div>
-                <button>Start Quiz</button>
+                <Link to = '/quizscreen'>
+                    <button>Start Quiz</button>
+                </Link>
+                <Link to = '/statisticsscreen'>
                 <button> See My Statistics</button>
+                </Link>
             </div>
         </div>
     )

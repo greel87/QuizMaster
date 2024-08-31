@@ -1,11 +1,12 @@
-//import FirstScreen from './Screens/FirstScreen'
 import './App.css'
-import QuizScreen from './Screens/QuizScreen.tsx'
+import FirstScreen from './Screens/FirstScreen.tsx'
+
 
 function App() {
   return (
-    //<FirstScreen />
-    <QuizScreen />
+    <div>
+    <FirstScreen />
+    </div>
   )
 }
 
