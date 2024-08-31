@@ -99,7 +99,13 @@ export const QuizScreen = () => {
     const currentQuestion = state.quizData.questions[state.currentQuestion];
     const progress = (state.currentQuestion / state.quizData.questions.length) * 100;
 
+    if (state.isQuizEnded) {
+        navigate('/resultscreen');
+        return null; 
+    }
+
     return (
+      
         <div id='QuizScreen'>
             <h1>React Quiz</h1>
             <div>Time Left: {formatTime(state.timeLeft)}</div>
@@ -132,7 +138,7 @@ export const QuizScreen = () => {
                     }}>End Quiz</button>
                 </Link>
             </div>
-        </div>
+        </div>     
     )
 }
 export default QuizScreen
