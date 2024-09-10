@@ -1,11 +1,11 @@
 import './App.css'
-import FirstScreen from './Screens/FirstScreen.tsx'
+import QuizConfiguration from './Screens/configuration/QuizConfiguration.tsx'
 
 
 function App() {
   return (
     <div>
-    <FirstScreen />
+    <QuizConfiguration />
     </div>
   )
 }
