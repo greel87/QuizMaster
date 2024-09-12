@@ -4,8 +4,9 @@ import QuizScreen from "../Screens/quiz/QuizScreen"
 import { ResultScreen } from "../Screens/results/ResultsScreen"
 import StatisticsScreen from "../Screens/StatisticsScreen"
 import { Provider } from "react-redux"
-import { store } from "../store"
+import { persistor, store } from "../store"
 import { Routes } from "../constants/routes"
+import { PersistGate } from "redux-persist/integration/react"
 
 const router = createBrowserRouter([
     {
@@ -28,7 +29,9 @@ const router = createBrowserRouter([
 export const RootNavigation = () => {
     return (
         <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
             <RouterProvider router = {router} />
+            </PersistGate>
         </Provider>
     )
 }

@@ -43,8 +43,7 @@ export const fetchCategories = createAsyncThunk(
         state.selectedConfig = action.payload
       },
       resetConfig: (state) => {
-        state.selectedConfig = initialState.selectedConfig
-        state.config = initialState.config
+      return initialState
       }
     },
     extraReducers: (builder) => {

@@ -4,7 +4,8 @@ const initialState = {
   list: [],
   loading: false,
   currentQuestion: 0,
-  answers: []
+  answers: [],
+  time: 0
 }
 
 export const selectQuestions = (state) => state.quiz?.list ?? []
@@ -12,6 +13,9 @@ export const selectIsQuestionsLoading = (state) => state.quiz.loading
 export const selectCurrentQuestion = (state) => state.quiz.currentQuestion
 export const selectAnswers = (state) => state.quiz.answers ?? []
 export const selectAmountOfQuestions = (state) => state.quiz.list.length
+export const selectTimeQuestions = (state) => state.quiz.time
+
+
 
 export const fetchQuestions = createAsyncThunk(
   'fetchQuestions',
@@ -51,7 +55,10 @@ const quizSlice = createSlice({
     },
     resetQuestions: (state) => {
       return { ...initialState };
-  },
+    },
+    setTime: (state, action) => {
+      state.time = action.payload * 60 * 1000
+    }
 },
   extraReducers: (builder) => {
     builder.addCase(fetchQuestions.pending, (state) => {
@@ -66,7 +73,7 @@ const quizSlice = createSlice({
     })
   }
 })
-export const {answer, resetQuestions} = quizSlice.actions
+export const {answer, resetQuestions, setTime} = quizSlice.actions
 
 export const quizReducer = quizSlice.reducer
 

@@ -3,6 +3,7 @@ import { setConfig } from "../../store/slices/quizConfiguration";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "../../constants/routes"
+import { setTime } from "../../store/slices/quizScreen";
 
 const getInitialState = (configEntries) => {
     const result = {};
@@ -28,6 +29,7 @@ const getInitialState = (configEntries) => {
   
     const handleStartQuiz = () => {
       dispatch(setConfig(formState))
+      dispatch(setTime(formState.time))
       navigate(Routes.quizScreen)
     };
     const handleStatistics = () => {
