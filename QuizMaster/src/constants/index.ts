@@ -80,13 +80,13 @@ const difficultyOptions = [
     },
     {
       id: 2,
-      value: 2,
-      name: 2,
+      value: 5,
+      name: 5,
     },
     {
       id: 3,
-      value: 3,
-      name: 3,
+      value: 10,
+      name: 10,
     },
   ]
   

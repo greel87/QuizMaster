@@ -1,79 +1,66 @@
 import { useDispatch, useSelector } from "react-redux"
-import { selectResultState } from "../../store/slices/resultsScreen"
+import { resetResults, selectResultState } from "../../store/slices/resultsScreen"
 import { Routes } from "../../constants/routes"
 import { useNavigate } from "react-router-dom"
 import { resetConfig, selectSelectedConfig, setConfig } from "../../store/slices/quizConfiguration"
-import { resetQuestions } from "../../store/slices/quizScreen"
+import { resetQuestions, setTime } from "../../store/slices/quizScreen"
+import { useEffect } from "react"
+import { updateStatistics } from "../../store/slices/statistics"
 
 export const ResultScreen = () => {
-   const resultState = useSelector(selectResultState)
-   const config = useSelector(selectSelectedConfig)
-   console.log(resultState)
-   const dispatch = useDispatch()
-   
-   const navigate = useNavigate();
+    const resultState = useSelector(selectResultState);
+    const config = useSelector(selectSelectedConfig);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+  
+    // Update statistics when component mounts
+    useEffect(() => {
+      dispatch(updateStatistics(resultState));
+    }, []);
 
-   const handleRestart =() => {
+   const handleRestart = () => {
     dispatch(resetQuestions())
+    dispatch(resetResults())
+    dispatch(setConfig(config))
+    dispatch(setTime(config.time))
+   
     navigate(Routes.quizScreen)
    }
 
-   const handleNewQuiz = () =>{
-    resetConfig(config)
+   const handleNewQuiz = () => {
+    dispatch(resetConfig())
+    dispatch(resetResults())
+    dispatch(resetQuestions())
     navigate(Routes.main)
    }
 
-    return(
-        <div>
-        <h1>Thank you for completing this quiz. Here are your results</h1>
-        <div>
-            <p>Correct answers: {resultState.rightAnswers} Total Questions: {resultState.totalQuestions} </p>
-        </div>
-        <div>
-            <h2>Quiz Configuration</h2>
-            <p>Quiz Type: {resultState.type} </p>
-            <p>Quiz Category: {resultState.category}</p>
-            {/*need to add the total time from config here*/}            
-            <p>Difficulty: {resultState.difficulty}</p>
-        </div>
-        <div>
-            {/*need to add total time taken*/}
-        </div>
-        <div>
-            <button onClick ={handleRestart}>Restart</button>
-            <button onClick = {handleNewQuiz}>Choose Another Quiz</button>
-        </div>
-    </div>
-    )
-}
-/* import { Link } from "react-router-dom"
+   // Function to format time in minutes and seconds
+   const formatTime = (milliseconds) => {
+     const minutes = Math.floor(milliseconds / 60000);
+     const seconds = Math.floor((milliseconds % 60000) / 1000);
+     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+   };
 
-export const ResultScreen = () => {
    return(
     <div>
         <h1>Thank you for completing this quiz. Here are your results</h1>
         <div>
-            <p>Correct answers: 3 Total Questions: 5</p>
+            <p>You answered {resultState.rightAnswers} out of {resultState.totalQuestions} questions correctly.</p>
         </div>
         <div>
             <h2>Quiz Configuration</h2>
-            <p>Quiz Type: Practice </p>
-            <p>Quiz Category: Programming</p>
-            <p>Total Quiz Time: 5 minutes</p>
-            <p>Difficulty: Medium</p>
+            <p>Quiz Type: {resultState.type}</p>
+            <p>Quiz Category: {resultState.category}</p>
+            <p>Total Quiz Time: {formatTime(resultState.totalTime)}</p>
+            <p>Difficulty: {resultState.difficulty}</p>
         </div>
         <div>
-            <p>Total time: 2 minutes</p>
+            <p>Time taken: {formatTime(resultState.timeTaken)}</p>
         </div>
         <div>
-            <Link to = '/quizscreen'>
-                <button>Restart</button>
-            </Link>
-            <Link to = '/'>
-                <button>Choose Another Quiz</button>
-            </Link>
+            <button onClick={handleRestart}>Restart</button>
+            <button onClick={handleNewQuiz}>Choose Another Quiz</button>
         </div>
     </div>
    )
 }
-export default ResultScreen */
