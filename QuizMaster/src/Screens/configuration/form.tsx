@@ -1,65 +1,82 @@
-import { useState } from "react";
-import { setConfig } from "../../store/slices/quizConfiguration";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Routes } from "../../constants/routes"
+import { Box, Button, FormControl, FormLabel, Select, VStack } from "@chakra-ui/react";
+import { setConfig } from "../../store/slices/quizConfiguration";
 import { setTime } from "../../store/slices/quizScreen";
+import { Routes } from "../../constants/routes";
+import '../../App.css';
+import { ConfigItem } from "../../constants";
 
-const getInitialState = (configEntries) => {
-    const result = {};
-  
-    configEntries.forEach(([key, value]) => {
-      result[key] = value[0]?.value ?? value[0]?.id;
-    })
-    return result;
-  }
+interface FormProps {
+  config: {
+    numberOfQuestions: ConfigItem[];
+    time: ConfigItem[];
+    difficulty: ConfigItem[];
+    type: ConfigItem[];
+    categories: ConfigItem[];
+  };
+}
 
-  export const Form = ({ config }) => {
-    const values = Object.entries(config)
-    const [formState , setFormState] = useState(getInitialState(values))
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-  
-    const handleInputChange = (key, value) => {
-      setFormState((prev) => ({
-        ...prev,
-        [key]: value
-      }))
-    }
-  
-    const handleStartQuiz = () => {
-      dispatch(setConfig(formState))
-      dispatch(setTime(formState.time))
-      navigate(Routes.quizScreen)
-    };
-    const handleStatistics = () => {
-        navigate(Routes.statisticsScreen)
-    }
-  
-    return (
-      <div className="form-container">
-        <h2>Form</h2>
-        {values.map(([key, value]) => (
-          <div key={key} className="form-group">
-            <label htmlFor={key}>{key.toUpperCase()}</label>
-            <select
-              id={key}
-              value={formState[key]}
-              onChange={(event) => handleInputChange(key, event.target.value)}
-            >
-              {value.map(item => (
-                <option key={item.id} value={item.value ?? item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
-        <button onClick={handleStartQuiz} className="start-button">
-          Start quiz
-        </button>
-        <button onClick={handleStatistics}>See My Statistics</button>
-      </div>
-    )
-  }
-  export default Form
+const getInitialState = (configEntries: [string, Array<ConfigItem>][]) => {
+  const result: Record<string, string> = {};
+  configEntries.forEach(([key, value]) => {
+    result[key] = value[0]?.value ?? value[0]?.id?.toString() ?? '';
+  });
+  return result;
+};
+
+export const Form: React.FC<FormProps> = ({ config }) => {
+  const values = Object.entries(config);
+  const [formState, setFormState] = useState(getInitialState(values));
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleInputChange = (key: string, value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleStartQuiz = () => {
+    dispatch(setConfig(formState));
+    dispatch(setTime(parseInt(formState.time)));
+    navigate(Routes.quizScreen);
+  };
+
+  const handleStatistics = () => {
+    navigate(Routes.statisticsScreen);
+  };
+
+  return (
+    <Box width="100%">
+    <VStack spacing={4} align="stretch">
+      {values.map(([key, value]) => (
+        <FormControl key={key}>
+          <FormLabel htmlFor={key}>{key.toUpperCase()}</FormLabel>
+          <Select
+            id={key}
+            value={formState[key]}
+            onChange={(event) => handleInputChange(key, event.target.value)}
+          >
+            {value.map((item) => (
+              <option key={item.id} value={item.value ?? item.id}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+      ))}
+      <Button colorScheme="blue" onClick={handleStartQuiz} width="100%">
+        Start Quiz
+      </Button>
+      <Button onClick={handleStatistics} width="100%">
+       View Statistics
+      </Button>
+    </VStack>
+  </Box>
+  );
+};
+
+export default Form;
