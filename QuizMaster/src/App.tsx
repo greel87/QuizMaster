@@ -1,13 +1,13 @@
 import './App.css'
-import QuizConfiguration from './Screens/configuration/QuizConfiguration.tsx'
+import { Box } from '@chakra-ui/react';
+import QuizConfiguration from './Screens/configuration/QuizConfiguration';
 
-
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-    <QuizConfiguration />
-    </div>
-  )
+    <Box>
+      <QuizConfiguration />
+    </Box>
+  );
 }
 
-export default App
+export default App;
